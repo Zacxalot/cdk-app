@@ -47,5 +47,10 @@ export class CdkStack extends cdk.Stack {
     new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: { origin: new origins.S3Origin(bucket) },
     });
+
+    // Output the bucket name
+    new cdk.CfnOutput(this, "Bucket", {
+      value: bucket.bucketName,
+    });
   }
 }
