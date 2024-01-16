@@ -4,6 +4,7 @@ import * as s3Deployment from "aws-cdk-lib/aws-s3-deployment";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as cognito from "aws-cdk-lib/aws-cognito";
 
 import { Construct } from "constructs";
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
@@ -13,8 +14,7 @@ export class CdkStack extends cdk.Stack {
     super(scope, id, props);
 
     this.deploymentBucket();
-
-    // Cognito User Pool
+    this.cognitoUserPool();
   }
 
   deploymentBucket() {
@@ -51,6 +51,20 @@ export class CdkStack extends cdk.Stack {
     // Output the bucket name
     new cdk.CfnOutput(this, "Bucket", {
       value: bucket.bucketName,
+    });
+  }
+
+  cognitoUserPool() {
+    const userPool = new cognito.UserPool(this, "ViteAppUserPool", {});
+    const userPoolClient = new cognito.UserPoolClient(this, "UserPoolClient", {
+      userPool,
+    });
+
+    new cdk.CfnOutput(this, "UserPoolID", {
+      value: userPool.userPoolId,
+    });
+    new cdk.CfnOutput(this, "UserPoolClientID", {
+      value: userPoolClient.userPoolClientId,
     });
   }
 }
