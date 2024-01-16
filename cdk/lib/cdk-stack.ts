@@ -55,11 +55,19 @@ export class CdkStack extends cdk.Stack {
   }
 
   cognitoUserPool() {
-    const userPool = new cognito.UserPool(this, "ViteAppUserPool", {});
+    const userPool = new cognito.UserPool(this, "ViteAppUserPool", {
+      signInAliases: {
+        email: true,
+      },
+      standardAttributes: {
+        email: {
+          required: true,
+        },
+      },
+    });
     const userPoolClient = new cognito.UserPoolClient(this, "UserPoolClient", {
       userPool,
     });
-
     new cdk.CfnOutput(this, "UserPoolID", {
       value: userPool.userPoolId,
     });

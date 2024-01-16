@@ -16,6 +16,9 @@ export STACK_NAME
     BUCKET_NAME=$(jq -r '.Bucket' <<< "$OUTPUT_JSON")
     USER_POOL_ID=$(jq -r '.UserPoolID' <<< "$OUTPUT_JSON")
     USER_POOL_CLIENT_ID=$(jq -r '.UserPoolClientID' <<< "$OUTPUT_JSON")
+
+    echo "$USER_POOL_ID"
+    echo "$USER_POOL_CLIENT_ID"
     
     # Must export these for amplify auth to work
     export USER_POOL_ID
@@ -27,7 +30,7 @@ export STACK_NAME
 
     # Deploy App
     echo "Pushing to $BUCKET_NAME"
-    aws s3 sync dist/ "s3://$BUCKET_NAME"
+    aws s3 sync dist/ "s3://$BUCKET_NAME" --delete
 
     # Set correct mime-type for .js files - cut the dist/ prefix
     for file in $(find ./dist -type f | grep '\.js$' | cut -c 8-); do
